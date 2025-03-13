@@ -26,10 +26,10 @@ namespace DungeonExplorer
                     Console.Write("Name cannot be empty. Please enter a valid name: ");
                 }
             } while (string.IsNullOrWhiteSpace(playerName));
-
+            
             player = new Player(playerName, 100); // Player starts with 100 health
             InitializeRooms(); // Create rooms and connections
-
+            
             // Ensure Entrance exists before setting currentRoom
             if (rooms.ContainsKey("Entrance"))
             {
@@ -46,7 +46,7 @@ namespace DungeonExplorer
         private void InitializeRooms()
         {
             List<string> roomNames = new List<string> { "Entrance", "Hallway", "Armory", "Library", "Treasure Room" };
-            rooms = new Dictionary<string, Room>(); // // // // //
+            rooms = new Dictionary<string, Room>();
 
             // Create each room with a description
             foreach (var roomName in roomNames)
@@ -55,7 +55,7 @@ namespace DungeonExplorer
             }
 
             List<string> directions = new List<string> { "north", "south", "east", "west" };
-
+            
             // Randomly connect rooms to each other
             foreach (var room in rooms.Values)
             {
@@ -64,7 +64,7 @@ namespace DungeonExplorer
                 {
                     string direction = directions[random.Next(directions.Count)];
                     string randomRoom = roomNames[random.Next(roomNames.Count)];
-
+                    
                     if (randomRoom != room.GetDescription() && !room.CanMove(direction))
                     {
                         room.AddConnection(direction, randomRoom);
@@ -98,7 +98,7 @@ namespace DungeonExplorer
                 // Display current room and available directions
                 Console.WriteLine("\nCurrent Location: " + currentRoom.GetDescription());
                 Console.WriteLine("Available directions: " + currentRoom.GetAvailableDirections());
-
+                
                 // Show menu options
                 Console.WriteLine("\nWhat would you like to do?");
                 Console.WriteLine("1. Move to another room");
@@ -106,7 +106,7 @@ namespace DungeonExplorer
                 Console.WriteLine("3. Pick Up an Item");
                 Console.WriteLine("4. Exit Game");
                 Console.Write("Enter your choice: ");
-
+                
                 string choice;
                 do
                 {
@@ -116,7 +116,7 @@ namespace DungeonExplorer
                         Console.Write("Input cannot be empty. Please enter a valid choice: ");
                     }
                 } while (string.IsNullOrWhiteSpace(choice));
-
+                
                 // Handle user input
                 switch (choice)
                 {
@@ -131,7 +131,7 @@ namespace DungeonExplorer
                                 Console.Write("Direction cannot be empty. Please enter a valid direction: ");
                             }
                         } while (string.IsNullOrWhiteSpace(direction));
-
+                        
                         MoveToRoom(direction);
                         break;
                     case "2":
@@ -148,7 +148,7 @@ namespace DungeonExplorer
                                 Console.Write("Item name cannot be empty. Please enter a valid item name: ");
                             }
                         } while (string.IsNullOrWhiteSpace(item));
-
+                        
                         player.PickUpItem(item);
                         break;
                     case "4":
@@ -166,7 +166,8 @@ namespace DungeonExplorer
         private void MoveToRoom(string direction)
         {
             string nextRoomName = currentRoom.GetNextRoom(direction);
-            if (rooms.ContainsKey(nextRoomName))
+
+            if (!string.IsNullOrEmpty(nextRoomName) && rooms.ContainsKey(nextRoomName))
             {
                 currentRoom = rooms[nextRoomName];
                 Console.WriteLine("\nYou move " + direction + " to " + currentRoom.GetDescription());
