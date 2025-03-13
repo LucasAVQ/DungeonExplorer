@@ -1,20 +1,21 @@
-﻿using System;
+﻿using DungeonExplorer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DungeonExplorer
+// Program Class: Entry point for the game
+internal class Program
 {
-    internal class Program
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
-        {
-            Game game = new Game();
-            game.Start();
-            Console.WriteLine("Waiting for your Implementation");
-            Console.WriteLine("Press any key to exit...");
-            Console.ReadKey();
-        }
+        Console.WriteLine("Welcome to Dungeon Explorer!");
+        Game game = new Game(); // Initialize the game
+        game.Start(); // Start the game loop
+
+        Console.WriteLine("Game Over. Thanks for playing!");
+        Console.WriteLine("Press any key to exit...");
+        Console.ReadKey(); // Wait for user input before closing
     }
 }
