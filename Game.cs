@@ -11,6 +11,9 @@ public class Game
     // start the game
     public void Start()
     {
+
+        Testing.RunTests();
+
         // create the player
         player = new Player("Hero", 100);
 
