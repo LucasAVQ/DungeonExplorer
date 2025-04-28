@@ -1,47 +1,45 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace DungeonExplorer
+// represents a room in the dungeon
+public class Room
 {
-    // Room Class represents a room in the dungeon
-    public class Room
+    public string Name { get; set; } // name of the room
+    public string Description { get; set; } // description of the room
+    public List<Monster> Monsters { get; set; } = new List<Monster>(); // monsters in the room
+    public List<Item> Items { get; set; } = new List<Item>(); // items in the room
+    public Dictionary<string, string> Directions { get; set; } = new Dictionary<string, string>(); // directions to other rooms
+
+    // constructor to set name and description
+    public Room(string name, string description)
     {
-        private string description; // Room description
-        private Dictionary<string, string> connections; // Stores available room connections
+        Name = name;
+        Description = description;
+    }
 
-        public Room(string description, Dictionary<string, string> connections)
-        {
-            this.description = description;
-            this.connections = connections;
-        }
+    // add a direction leading to another room
+    public void AddDirection(string direction, string roomName)
+    {
+        Directions[direction] = roomName;
+    }
 
-        // Return room description
-        public string GetDescription()
-        {
-            return description;
-        }
+    // get the room name in the given direction
+    public string GetNextRoom(string direction)
+    {
+        return Directions.ContainsKey(direction) ? Directions[direction] : null;
+    }
 
-        // Adds connection between rooms
-        public void AddConnection(string direction, string roomName)
-        {
-            connections[direction] = roomName;
-        }
+    // check if moving in a direction is possible
+    public bool CanMove(string direction)
+    {
+        return Directions.ContainsKey(direction);
+    }
 
-        // Checks if the player can move in a given direction
-        public bool CanMove(string direction)
-        {
-            return connections.ContainsKey(direction);
-        }
-
-        // Retrieves the next room in a given direction
-        public string GetNextRoom(string direction)
-        {
-            return connections.ContainsKey(direction) ? connections[direction] : null;
-        }
-
-        // Returns movement options
-        public string GetAvailableDirections()
-        {
-            return connections.Count > 0 ? string.Join(", ", connections.Keys) : "None";
-        }
+    // find the monster in the room with the most health
+    public Monster GetStrongestMonster()
+    {
+        return Monsters.OrderByDescending(m => m.Health).FirstOrDefault();
     }
 }
+

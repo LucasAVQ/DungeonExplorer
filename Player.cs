@@ -3,31 +3,66 @@ using System.Collections.Generic;
 
 namespace DungeonExplorer
 {
-    // Player Class represents the player character in the game
-    public class Player
+    // the player that the user controls
+    public class Player : Creature
     {
-        public string Name { get; private set; } // Player's name
-        public int Health { get; private set; } // Player's health
-        private List<string> inventory = new List<string>(); // Inventory to store items
+        // player inventory of items
+        public Inventory Inventory { get; private set; }
 
-        public Player(string name, int health)
+        // currently equipped weapon
+        private Weapon equippedWeapon;
+
+        // constructor to set player name and health
+        public Player(string name, int health) : base(name, health)
         {
-            Name = name;
-            Health = health;
+            Inventory = new Inventory();
         }
 
-        // Allows the player to pick up an item
-        public void PickUpItem(string item)
+        // pick up an item and add it to the inventory
+        public void PickUpItem(Item item)
         {
-            inventory.Add(item);
-            Console.WriteLine("You picked up: " + item);
+            Inventory.Add(item);
+            Console.WriteLine("You picked up: " + item.Name);
         }
 
-        // Displays player's inventory
+        // use an item by its name
+        public void UseItem(string itemName)
+        {
+            Item item = Inventory.FindItemByName(itemName);
+            if (item != null)
+            {
+                item.Use(this);
+                Inventory.Remove(item);
+            }
+            else
+            {
+                Console.WriteLine("You don't have that item.");
+            }
+        }
+
+        // equip a weapon
+        public void EquipWeapon(Weapon weapon)
+        {
+            equippedWeapon = weapon;
+            Console.WriteLine("You equipped: " + weapon.Name);
+        }
+
+        // attack a target creature
+        public override void Attack(Creature target)
+        {
+            // damage depends on if a weapon is equipped
+            int damage = equippedWeapon != null ? equippedWeapon.GetDamage() : 2;
+            Console.WriteLine($"{Name} attacks {target.Name} for {damage} damage!");
+            target.TakeDamage(damage);
+        }
+
+        // show the player's current status
         public void DisplayStatus()
         {
-            Console.WriteLine("Player: " + Name + " | Health: " + Health);
-            Console.WriteLine("Inventory: " + (inventory.Count > 0 ? string.Join(", ", inventory) : "Empty"));
+            Console.WriteLine($"Player: {Name} | Health: {Health}");
+            Console.WriteLine($"Equipped Weapon: {(equippedWeapon != null ? equippedWeapon.Name : "None")}");
+            Inventory.ListItems();
         }
     }
 }
+
